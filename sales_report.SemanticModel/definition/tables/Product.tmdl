@@ -1,0 +1,75 @@
+table Product
+	lineageTag: 93b8bf10-a97b-4ab8-b4f4-4a007513c165
+
+	measure 'Product Sales Rank' = ```
+			
+			RANKX(
+			    ALL('Product'[ProductName]),
+			    [Total Sales],
+			    ,
+			    DESC,
+			    DENSE
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 7b09cb6b-2edc-4fca-9e00-c6438437ba4a
+
+	measure 'Top 5 Products Sales' = ```
+			
+			IF(
+			    [Product Sales Rank] <= 5,
+			    [Total Sales],
+			    BLANK()
+			)
+			
+			```
+		formatString: 0
+		lineageTag: ab69d95d-93b9-415b-9737-5506953126f7
+
+	column ProductID
+		dataType: int64
+		formatString: 0
+		lineageTag: 7406da8f-e688-4b18-a131-77f085e8d741
+		summarizeBy: none
+		sourceColumn: ProductID
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductName
+		dataType: string
+		lineageTag: 5cbbff32-a5ee-4ffc-b09f-0f56b06d9137
+		summarizeBy: none
+		sourceColumn: ProductName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: 663b68d6-5fe6-4676-9579-816c6fde8593
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column UnitPrice
+		dataType: int64
+		formatString: 0
+		lineageTag: be94a3d0-eb8e-4258-8d70-d096fd9fd588
+		summarizeBy: none
+		sourceColumn: UnitPrice
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Product = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\PaluriManasa\Downloads\OrderDetails_Data\Product.csv"),[Delimiter=",", Columns=4, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"ProductID", Int64.Type}, {"ProductName", type text}, {"Category", type text}, {"UnitPrice", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,46 @@
+table 'Measures Table'
+	lineageTag: 8794dab6-84f4-43f2-9391-280f170f83c9
+
+	column 'Total Sales'
+		formatString: 0
+		lineageTag: a9820250-9d66-46ff-bd99-4364ff2e3ac4
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Total Sales]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total Units Sold'
+		formatString: 0
+		lineageTag: a9c076cc-1bbf-4869-9607-ea99225400a1
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Total Units Sold]
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateKey
+		formatString: 0
+		lineageTag: e46c5547-20d3-4bb9-9735-0ddf624139a8
+		summarizeBy: count
+		isNameInferred
+		sourceColumn: Sales[DateKey]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Measures Table' = calculated
+		mode: import
+		source = ```
+				
+				SUMMARIZE(
+				    'Sales',
+				    'Sales'[DateKey],  -- Replace with the column you want to group by
+				    "Total Sales", [Total Sales],
+				    "Total Units Sold", [Total Units Sold]
+				)
+				
+				 
+				```
+
+	annotation PBI_Id = 151582740614450fab256442c44ebdd4
+

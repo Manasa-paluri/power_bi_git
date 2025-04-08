@@ -1,0 +1,110 @@
+table Calendar
+	lineageTag: eb5921ba-4e26-4df6-afe2-a5b00146bcf1
+
+	column Date
+		formatString: General Date
+		lineageTag: 31ff71a1-8002-4aee-a626-8ec6cb3913e0
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: 651658c1-13cb-4620-9b7e-0b8c79967d01
+			defaultHierarchy: LocalDateTable_64c6f339-9c32-401d-bba1-b26de45f1076.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'YYYY MM'
+		lineageTag: 78a60a0e-dc68-4c4f-9a67-95eb7f40e965
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [YYYY MM]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		lineageTag: 7d18893c-6621-4b28-ad99-038f6e43e82b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearMM
+		lineageTag: a940243a-deac-4aec-9534-bac5e9f77e27
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [YearMM]
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthNo
+		formatString: 0
+		lineageTag: 91a6bf27-93d8-47c4-8494-f7d8c7243eec
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [MonthNo]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		lineageTag: 52f3b74a-9f98-43eb-8bb0-847d54500537
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month]
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearMonth
+		lineageTag: e40dddc9-524a-442a-85a7-e3949fe31202
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [YearMonth]
+
+		annotation SummarizationSetBy = Automatic
+
+	column yearmonth2
+		lineageTag: 8e1efe53-11e1-4955-9f59-b9a6cac98cd9
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [yearmonth2]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day
+		lineageTag: e0a3e3b5-2c6c-4024-8185-669f8b021706
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Day]
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_date_cal
+		lineageTag: 8bb4d7e3-3c79-4df9-bdb7-13b7cf02ddb6
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [order_date_cal]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendar = calculated
+		mode: import
+		source =
+				
+				VAR Days = CALENDAR(DATE(2021,1,1), TODAY())
+				Return ADDCOLUMNS(
+				    Days,
+				"Year", FORMAT([Date], "yyyy"),
+				"YearMM",FORMAT([Date], "YYYYMM"),
+				"MonthNo",MONTH([Date]),
+				"Month", FORMAT([Date],"MMM"),
+				"YearMonth", FORMAT([Date], "MMM YYYY"),
+				"yearmonth2", FORMAT([Date], "MMM-YY"),
+				"YYYY MM", FORMAT([Date], "YYYY MM"),
+				"Day", FORMAT([Date],"DD"),
+				"order_date_cal", FORMAT([Date],"DD MMMM YYYY")
+				)
+
+	annotation PBI_Id = 900bbd09d4b7427b9234065964a6b23e
+

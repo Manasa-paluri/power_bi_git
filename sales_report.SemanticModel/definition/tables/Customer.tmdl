@@ -1,0 +1,52 @@
+table Customer
+	lineageTag: 69cd742e-3946-405c-acb7-e52645177646
+
+	measure 'Sales by Customer Segment' = ```
+			
+			CALCULATE(
+			    [Total Sales],
+			    ALLEXCEPT('Customer', 'Customer'[Segment])
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: 7f5a3ffa-ecb0-4463-b365-8a4e2205f76e
+
+	column CustomerID
+		dataType: int64
+		formatString: 0
+		lineageTag: 35b662c9-5782-4a54-8174-408e21db97d4
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerName
+		dataType: string
+		lineageTag: c0b805b5-b406-4ca1-b529-757ab1e8ec9c
+		summarizeBy: none
+		sourceColumn: CustomerName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Segment
+		dataType: string
+		lineageTag: daea33ba-7e08-4e73-aa90-321a1eb8250c
+		summarizeBy: none
+		sourceColumn: Segment
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Customer = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\PaluriManasa\Downloads\OrderDetails_Data\Customer.csv"),[Delimiter=",", Columns=3, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"CustomerID", Int64.Type}, {"CustomerName", type text}, {"Segment", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
